@@ -228,9 +228,18 @@ export_args_validation(){
     local confirm_value
     local valid
     local i=0
+	local cmdopt
+	local arg_dict_name
     while [[ $i -lt $_NUM_OF_DICTS ]]; do
         eval "arg_dict=(${_LIST_ARGS_DICTS[$i]})"
         result=$(printenv | grep "${arg_dict[name]}" | cut -f2 -d "=")
+
+		#clpham:
+		cmdopt=$(printenv | grep "${arg_dict_name}" | cut -f1 -d "=")
+		if [[ ! $(echo "$cmdopt" | grep ${arg_dict[name]}) ]]; then
+			result=""
+		fi
+
         if [[ -z $result ]]; then
             default=${arg_dict[default]}
             if [[ -n ${arg_dict[allow_env_var]} ]]; then
